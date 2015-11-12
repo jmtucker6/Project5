@@ -1,24 +1,60 @@
 #include "Heap.h"
+#include <fstream>
+#include <iostream>
+#include <string>
 
+Node* find(Node*, char);
 
 int main() {
-	Heap heap(10);
-	Node temp;
-	temp.content = "abc";
-	temp.priority = 10;
-	heap.insert(temp);
-	temp.content = "bcd";
-	temp.priority = 11;
-	heap.insert(temp);
-	temp.content = "cde";
-	temp.priority = 5;
-	heap.insert(temp);
+	Heap heap = Heap(10);
+	char c;
+	Node *chars = NULL;
+	Node *ptr = chars;
 
-	heap.displayArr();
+	std::ifstream in("example.txt");
+	while (in.get(c)) {
+		std::cout << c;
+		if (chars == NULL) {
+			Node *temp = new Node;
+			temp->content = c;
+			temp->priority = 1;
+			temp->next = NULL;
+			chars = temp;
+			ptr = temp;
+		}
+		else {
+			Node *temp = find(chars, c);
+			if (temp != NULL) {
+				temp->priority++;
+			}
+			else {
+				temp = new Node;
+				temp->content = c;
+				temp->priority = 1;
+				temp->next = NULL;
+				ptr->next = temp;
+				ptr = temp;
+			}
+		}
+	}
 
-	heap.removeMin();
+	in.close();
 
-	heap.displayArr();
+	ptr = chars;
+	while (ptr != NULL) {
+		heap.insert(ptr);
+		ptr = ptr->next;
+	}
+
 
 	return 0;
+}
+
+Node* find(Node *head, char c) {
+	while (head != NULL) {
+		if (head->content == c)
+			return head;
+		head = head->next;
+	}
+	return NULL;
 }

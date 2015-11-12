@@ -4,7 +4,7 @@
 
 Heap::Heap(int s = 10)
 {
-	arr = new Node[s];
+	arr = new Node*[s];
 	lastPosition = -1;
 	size = s;
 	numItems = 0;
@@ -21,7 +21,7 @@ bool Heap::isHeap(Node n) {
 	return true;
 }
 
-void Heap::insert(Node n) {
+void Heap::insert(Node *n) {
 	if (lastPosition == -1) {
 		arr[++lastPosition] = n;
 		numItems++;
@@ -39,8 +39,8 @@ void Heap::insert(Node n) {
 void Heap::bubbleUp(int pos) {
 	if (pos < 1)
 		return;
-	if (arr[pos].priority < arr[getParentIndex(pos)].priority) {
-		Node temp;
+	if (arr[pos]->priority < arr[getParentIndex(pos)]->priority) {
+		Node *temp;
 		temp = arr[getParentIndex(pos)];
 		arr[getParentIndex(pos)] = arr[pos];
 		arr[pos] = temp;
@@ -52,14 +52,14 @@ void Heap::bubbleUp(int pos) {
 
 void Heap::bubbleDown(int pos) {
 	int min = pos;
-	if (getLeftIndex(pos) <= lastPosition && arr[getLeftIndex(pos)].priority < arr[min].priority) {
+	if (getLeftIndex(pos) <= lastPosition && arr[getLeftIndex(pos)]->priority < arr[min]->priority) {
 		min = getLeftIndex(pos);
 	}
-	if (getRightIndex(pos) <= lastPosition && arr[getRightIndex(pos)].priority < arr[min].priority) {
+	if (getRightIndex(pos) <= lastPosition && arr[getRightIndex(pos)]->priority < arr[min]->priority) {
 		min = getRightIndex(pos);
 	}
 	if (min != pos) {
-		Node temp = arr[pos];
+		Node *temp = arr[pos];
 		arr[pos] = arr[min];
 		arr[min] = temp;
 		bubbleDown(min);
@@ -67,28 +67,30 @@ void Heap::bubbleDown(int pos) {
 }
 
 Node Heap::removeMin() {
-	Node temp = arr[lastPosition];
+	Node *temp = arr[lastPosition];
 	arr[lastPosition] = arr[0];
 	arr[0] = temp;
-	temp = arr[lastPosition];
-	arr[lastPosition].content = "";
-	arr[lastPosition].priority = 0;
+	Node result = *arr[lastPosition];
+	arr[lastPosition]->content = '\0';
+	arr[lastPosition]->priority = 0;
+	delete arr[lastPosition];
 	lastPosition--;
 	bubbleDown(0);
 	numItems--;
-	return temp;
+	return result;
 }
 
 int Heap::getParentIndex(int pos) {
-	return (pos - 1) / 2;
+	int i = (pos - 1) / 2;
+	return i;
 }
 
 int Heap::getLeftIndex(int pos) {
-	return pos * 2 + 1;
+	return (int) pos * 2 + 1;
 }
 
 int Heap::getRightIndex(int pos) {
-	return pos * 2 + 2;
+	return (int) pos * 2 + 2;
 }
 
 int Heap::count() {
@@ -96,20 +98,19 @@ int Heap::count() {
 }
 
 void Heap::expandArr() {
-	Node *temp;
-	temp = new Node[size * 2];
+	Node **temp;
+	temp = new Node*[size * 2];
 	for (int i = 0; i < size; i++) {
 		temp[i] = arr[i];
 	}
 	delete[] arr;
 	arr = temp;
 	size *= 2;
-	delete[] temp;
 }
 
 void Heap::displayArr() {
-	for (int i = 0; i < size; i++) {
-		std::cout << arr[i].content << " ";
+	for (int i = 0; i < numItems; i++) {
+		std::cout << arr[i]->content << " ";
 	}
 	std::cout << std::endl;
 }

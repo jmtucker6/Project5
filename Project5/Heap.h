@@ -2,8 +2,9 @@
 #include <iostream>
 
 struct Node {
-	std::string content;
+	char content;
 	int priority;
+	Node *next;
 };
 class Heap
 {
@@ -12,7 +13,7 @@ public:
 	~Heap();
 	bool isHeap(Node);
 	Node removeMin();
-	void insert(Node);
+	void insert(Node*);
 	void bubbleUp(int);
 	void bubbleDown(int);
 	int count();
@@ -22,7 +23,7 @@ public:
 	void expandArr();
 	void displayArr();
 private:
-	Node *arr;
+	Node **arr;
 	int size;
 	int lastPosition;
 	int numItems;
