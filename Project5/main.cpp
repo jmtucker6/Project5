@@ -1,4 +1,5 @@
 #include "Heap.h"
+#include "Table.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -8,6 +9,7 @@ Node* find(Node*, char);
 std::string preorder(Node *);
 std::string inorder(Node *);
 std::string removeSpaces(std::string);
+void generateEncodingTable(Node*, Table*, std::string);
 
 int main(int argc, char* argv[]) {
 	Heap heap = Heap(10);
@@ -59,6 +61,7 @@ int main(int argc, char* argv[]) {
 		heap.insert(ptr);
 		ptr = ptr->next;
 	}
+	int totalChars = heap.count();
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,12 +81,50 @@ int main(int argc, char* argv[]) {
 		heap.insert(parent);
 	}
 	Node *codeTree = parent;
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////// Get Traversals ////////////////////////////////////////////
 
 	std::ofstream outTree("tree.txt");
 	outTree << removeSpaces(preorder(codeTree)) << std::endl;
 	outTree << removeSpaces(inorder(codeTree)) << std::endl;
 	outTree.close();
 
+	/////////////////////////////////////////////////////////////////////////////////////////
+
+	////////////////////////////// Create Encoding Table ////////////////////////////////////
+
+	Table *codeTable = new Table[totalChars];
+	std::string code = "";
+	generateEncodingTable(codeTree, codeTable, code);
+
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////// Write Code ////////////////////////////////////////////////
+	std::ofstream outCode("code.txt");
+	in.open(argv[1]);
+	c = '\0';
+	while (in.get(c)) {
+		for (int i = 0; i < totalChars; i++)
+		{
+			if (c == codeTable[i].content) {
+				outCode << codeTable[i].encoding;
+				break;
+			}
+		}
+	}
+	in.close();
+	outCode.close();
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////// Output Lengths ////////////////////////////////////////
+	std::ofstream outLength("length.txt");
+	for (int i = 0; i < totalChars; i++)
+	{
+		outLength << codeTable[i].content << " " << " " << codeTable[i].encoding << " " << codeTable[i].encoding.length() << std::endl;
+	}
+	outLength.close();
+	////////////////////////////////////////////////////////////////////////////////////////
 	return 0;
 }
 
@@ -116,4 +157,19 @@ std::string removeSpaces(std::string s) {
 	if (s[s.length() - 1] != ' ')
 		result += s[s.length() - 1];
 	return result;
+}
+
+void generateEncodingTable(Node *parent, Table *table, std::string code) {
+	static int index = 0;
+	std::string myCode = code;
+	if (parent == NULL)
+		return;
+	if (parent->left == NULL && parent->right == NULL) {
+		table[index].content = parent->content;
+		table[index].encoding = myCode;
+		index++;
+		return;
+	}
+	generateEncodingTable(parent->left, table, myCode+"0");
+	generateEncodingTable(parent->right, table, myCode+"1");
 }
