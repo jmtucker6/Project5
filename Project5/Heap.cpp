@@ -66,18 +66,16 @@ void Heap::bubbleDown(int pos) {
 	}
 }
 
-Node Heap::removeMin() {
+Node* Heap::removeMin() {
 	Node *temp = arr[lastPosition];
 	arr[lastPosition] = arr[0];
 	arr[0] = temp;
-	Node result = *arr[lastPosition];
-	arr[lastPosition]->content = '\0';
-	arr[lastPosition]->priority = 0;
-	delete arr[lastPosition];
+	temp = arr[lastPosition];
+	arr[lastPosition] = NULL;
 	lastPosition--;
 	bubbleDown(0);
 	numItems--;
-	return result;
+	return temp;
 }
 
 int Heap::getParentIndex(int pos) {
@@ -110,7 +108,7 @@ void Heap::expandArr() {
 
 void Heap::displayArr() {
 	for (int i = 0; i < numItems; i++) {
-		std::cout << arr[i]->content << " ";
+		std::cout << arr[i]->label << " ";
 	}
 	std::cout << std::endl;
 }

@@ -3,8 +3,11 @@
 
 struct Node {
 	char content;
+	std::string label;
 	int priority;
 	Node *next;
+	Node *left;
+	Node *right;
 };
 class Heap
 {
@@ -12,7 +15,7 @@ public:
 	Heap(int);
 	~Heap();
 	bool isHeap(Node);
-	Node removeMin();
+	Node* removeMin();
 	void insert(Node*);
 	void bubbleUp(int);
 	void bubbleDown(int);
