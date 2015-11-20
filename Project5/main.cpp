@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 	std::ofstream outLength("length.txt");
 	for (int i = 0; i < totalChars; i++)
 	{
-		outLength << codeTable[i].content << " " << " " << codeTable[i].encoding << " " << codeTable[i].encoding.length() << std::endl;
+		outLength  << (int) codeTable[i].content << " "  << codeTable[i].encoding.length() << std::endl;
 	}
 	outLength.close();
 	////////////////////////////////////////////////////////////////////////////////////////
